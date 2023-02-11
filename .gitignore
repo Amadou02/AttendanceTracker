@@ -2,3 +2,4 @@
 script.ps1
 script.sh
 /coverage
+.env
