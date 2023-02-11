@@ -5,11 +5,17 @@
   "scripts": {
     "start": "node ./bin/www",
     "dev": "nodemon ./bin/www",
+    "migration:up": "sequelize db:migrate",
+    "migration:down": "sequelize db:migrate:undo",
+    "seed:up": "sequelize db:seed:all",
+    "seed:down": "sequelize db:seed:undo",
     "test": "jest"
   },
   "dependencies": {
     "cookie-parser": "~1.4.4",
+    "cross-env": "^7.0.3",
     "debug": "~2.6.9",
+    "dotenv": "^16.0.3",
     "express": "^4.18.2",
     "morgan": "~1.9.1",
     "mysql2": "^3.1.2",
