@@ -1,35 +1,19 @@
 const app = require('../app');
 const request = require('supertest');
 
+const students_seeds = require('./../constants/students_data');
+const school_classes_seed = require('./../constants/school_classes_data');
+
 const { Student, SchoolClass, sequelize } = require('../models');
 
 beforeAll(async () => {
-  //   await sequelize.sync({
-  //     force: true,
-  //   });
+  await sequelize.sync({
+    force: true,
+  });
 
-//   await Student.destroy({
-//     truncate: true,
-//   });
+  await SchoolClass.bulkCreate(school_classes_seed);
 
-  const schoolClasses = await SchoolClass.findAll({});
-
-  await Student.bulkCreate([
-    {
-      firstname: 'John test',
-      lastname: 'DOE',
-      schoolClassId: schoolClasses[0].id,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-    {
-      firstname: 'Jane test',
-      lastname: 'KING',
-      schoolClassId: schoolClasses[3].id,
-      createdAt: new Date(),
-      updatedAt: new Date(),
-    },
-  ]);
+  await Student.bulkCreate(students_seeds);
 });
 
 afterAll(async () => {
