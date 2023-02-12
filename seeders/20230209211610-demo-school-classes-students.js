@@ -58,14 +58,14 @@ module.exports = {
         {
           firstname: 'John',
           lastname: 'DOE',
-          schoolClassId: results[0].id,
+          schoolClassId: 1,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
         {
           firstname: 'Jane',
           lastname: 'KING',
-          schoolClassId: results[3].id,
+          schoolClassId: 3,
           createdAt: new Date(),
           updatedAt: new Date(),
         },
