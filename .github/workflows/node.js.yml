@@ -47,6 +47,5 @@ jobs:
           echo "Waiting for MySQL to start..."
           sleep 1
         done
-    - run: mysql --host 127.0.0.1 --port ${{ job.services.db.ports['3306'] }} -u root -psecret < etc/original.sql
     - run: mysql --host 127.0.0.1 --port ${{ job.services.db.ports['3306'] }} -u root -psecret -e "SHOW DATABASES"
     - run: npm test
