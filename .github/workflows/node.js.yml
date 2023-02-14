@@ -13,6 +13,10 @@ jobs:
   build:
 
     runs-on: ubuntu-latest
+    env:
+      DB_TEST_NAME: attendance_tracker_test
+      DB_TEST_USER: root
+      DB_TEST_PASSWORD: secret
 
     strategy:
       matrix:
