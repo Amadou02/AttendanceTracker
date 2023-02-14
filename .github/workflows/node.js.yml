@@ -23,7 +23,8 @@ jobs:
       db:
         image: mysql
         env:
-          MYSQL_ALLOW_EMPTY_PASSWORD: true
+          MYSQL_ROOT_PASSWORD: 'secret'
+          MYSQL_DATABASE: 'attendance_tracker_test'
         ports:
            - 3306
         options: --health-cmd="mysqladmin ping" --health-interval=10s --health-timeout=5s --health-retries=3
@@ -38,9 +39,14 @@ jobs:
         cache: 'npm'
     - run: npm ci
     - run: npm run build --if-present    
-    - run: |
-        sudo service mysql start
-        mysql --host 127.0.0.1 --port ${{ job.services.db.ports['3306'] }} -uroot -ppassword < etc/original.sql
-        mysql --host 127.0.0.1 --port ${{ job.services.db.ports['3306'] }} -uroot -ppassword -e "SHOW DATABASES"
-        #This command adds the proper mysql port to the config file
+    - name: Start MySQL server
+      run: mysqld --user=mysql --bind-address=127.0.0.1 --port=${{ job.services.db.ports['3306'] }} --datadir=/var/lib/mysql --log-error=/var/log/mysql/error.log --pid-file=/var/run/mysqld/mysqld.pid --socket=/var/run/mysqld/mysqld.sock &
+    - name: Wait for MySQL to start
+      run: |
+        while ! mysqladmin ping -h127.0.0.1 -P${{ job.services.db.ports['3306'] }} -uroot -ppassword --silent; do
+          echo "Waiting for MySQL to start..."
+          sleep 1
+        done
+    - run: mysql --host 127.0.0.1 --port ${{ job.services.db.ports['3306'] }} -uroot -ppassword < etc/original.sql
+    - run: mysql --host 127.0.0.1 --port ${{ job.services.db.ports['3306'] }} -uroot -ppassword -e "SHOW DATABASES"
     - run: npm test
