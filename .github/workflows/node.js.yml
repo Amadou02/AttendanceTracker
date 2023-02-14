@@ -40,13 +40,13 @@ jobs:
     - run: npm ci
     - run: npm run build --if-present    
     - name: Start MySQL server
-      run: mysqld --user=mysql --bind-address=127.0.0.1 --port=${{ job.services.db.ports['3306'] }} --datadir=/var/lib/mysql --log-error=/var/log/mysql/error.log --pid-file=/var/run/mysqld/mysqld.pid --socket=/var/run/mysqld/mysqld.sock &
+      run: sudo mysqld --user=mysql --bind-address=127.0.0.1 --port=${{ job.services.db.ports['3306'] }} --datadir=/var/lib/mysql --log-error=/var/log/mysql/error.log --pid-file=/var/run/mysqld/mysqld.pid --socket=/var/run/mysqld/mysqld.sock --default-authentication-plugin=mysql_native_password &
     - name: Wait for MySQL to start
       run: |
-        while ! mysqladmin ping -h127.0.0.1 -P${{ job.services.db.ports['3306'] }} -uroot -psecret --default-authentication-plugin=mysql_native_password --silent; do
+        while ! mysqladmin ping -h127.0.0.1 -P${{ job.services.db.ports['3306'] }} -uroot -psecret --silent; do
           echo "Waiting for MySQL to start..."
           sleep 1
         done
-    - run: mysql --host 127.0.0.1 --port ${{ job.services.db.ports['3306'] }} -u root -psecret --default-authentication-plugin=mysql_native_password < etc/original.sql
-    - run: mysql --host 127.0.0.1 --port ${{ job.services.db.ports['3306'] }} -u root -psecret --default-authentication-plugin=mysql_native_password -e "SHOW DATABASES"
+    - run: mysql --host 127.0.0.1 --port ${{ job.services.db.ports['3306'] }} -u root -psecret < etc/original.sql
+    - run: mysql --host 127.0.0.1 --port ${{ job.services.db.ports['3306'] }} -u root -psecret -e "SHOW DATABASES"
     - run: npm test
